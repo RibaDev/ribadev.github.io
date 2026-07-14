@@ -157,9 +157,11 @@ const sectionLinks = [...document.querySelectorAll("[data-section-link]")];
 const sections = [...document.querySelectorAll("[data-section]")];
 const languageButtons = [...document.querySelectorAll("[data-lang]")];
 const panelsContainer = document.querySelector(".panels");
+const profileContent = document.querySelector(".content");
 const contentNavigation = document.querySelector(".content__nav");
 const desktopLayout = window.matchMedia("(min-width: 1040px)");
 const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+let heroBoundary = profileContent?.offsetTop || 0;
 
 function setLanguage(language, persist = true) {
   const lang = copy[language] ? language : "en";
@@ -189,7 +191,18 @@ function setLanguage(language, persist = true) {
   });
 
   if (persist) localStorage.setItem("profile-language", lang);
+  updateHeroSnapScope();
   requestSectionSync();
+}
+
+function syncHeroSnapScope() {
+  const atHeroBoundary = !desktopLayout.matches && window.scrollY <= heroBoundary + 2;
+  document.documentElement.classList.toggle("hero-snap", atHeroBoundary);
+}
+
+function updateHeroSnapScope() {
+  heroBoundary = profileContent?.offsetTop || 0;
+  syncHeroSnapScope();
 }
 
 function setCurrentSection(name) {
@@ -251,9 +264,14 @@ sectionLinks.forEach((link) => {
 });
 
 window.addEventListener("scroll", requestSectionSync, { passive: true });
+window.addEventListener("scroll", syncHeroSnapScope, { passive: true });
 panelsContainer?.addEventListener("scroll", requestSectionSync, { passive: true });
 window.addEventListener("resize", requestSectionSync);
-desktopLayout.addEventListener("change", requestSectionSync);
+window.addEventListener("resize", updateHeroSnapScope);
+desktopLayout.addEventListener("change", () => {
+  updateHeroSnapScope();
+  requestSectionSync();
+});
 window.addEventListener("hashchange", () => {
   const name = window.location.hash.slice(1).replace(/^panel-/, "");
   if (sections.some((section) => section.dataset.section === name)) {
@@ -278,6 +296,7 @@ setLanguage(copy[queryLanguage] ? queryLanguage : storedLanguage || browserLangu
 
 const initialHash = window.location.hash.slice(1).replace(/^panel-/, "");
 const initialSection = sections.some((section) => section.dataset.section === initialHash) ? initialHash : "profile";
+updateHeroSnapScope();
 setCurrentSection(initialSection);
 window.requestAnimationFrame(() => {
   if (initialHash && initialSection !== "profile") {
