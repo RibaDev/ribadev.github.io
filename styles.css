@@ -780,6 +780,15 @@ svg { display: block; }
   .contact-ledger__resume { grid-column: 1 / -1; }
 }
 
+@media (max-width: 1039px) {
+  html { scroll-snap-type: y mandatory; }
+  .portrait,
+  .content {
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+  }
+}
+
 @media (min-width: 1040px) {
   body { overflow: hidden; }
   .site-shell { height: 100dvh; display: grid; grid-template-columns: minmax(22rem, 30fr) minmax(0, 70fr); overflow: hidden; }
