@@ -73,7 +73,7 @@
           </details>
         </div>
 
-        <a class="discover" href="#main-content">
+        <a class="discover" href="#profile">
           <span data-i18n="discover">Explore my work</span>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg>
         </a>
@@ -82,11 +82,11 @@
 
     <main class="content" id="main-content">
       <div class="content__nav">
-        <nav class="tabs" role="tablist" aria-label="Profile sections" data-i18n-aria="sectionsLabel">
-          <button type="button" role="tab" id="tab-profile" aria-controls="panel-profile" aria-selected="true" data-tab="profile" data-i18n="navProfile">Profile</button>
-          <button type="button" role="tab" id="tab-impact" aria-controls="panel-impact" aria-selected="false" data-tab="impact" data-i18n="navImpact">Impact</button>
-          <button type="button" role="tab" id="tab-products" aria-controls="panel-products" aria-selected="false" data-tab="products" data-i18n="navProducts">Products</button>
-          <button type="button" role="tab" id="tab-contact" aria-controls="panel-contact" aria-selected="false" data-tab="contact" data-i18n="navContact">Contact</button>
+        <nav class="tabs" aria-label="Profile sections" data-i18n-aria="sectionsLabel">
+          <a id="nav-profile" href="#profile" data-section-link="profile" aria-current="page" data-i18n="navProfile">Profile</a>
+          <a id="nav-impact" href="#impact" data-section-link="impact" data-i18n="navImpact">Impact</a>
+          <a id="nav-products" href="#products" data-section-link="products" data-i18n="navProducts">Products</a>
+          <a id="nav-contact" href="#contact" data-section-link="contact" data-i18n="navContact">Contact</a>
         </nav>
 
         <div class="language-switch language-switch--on-paper" role="group" aria-label="Language / Idioma">
@@ -96,7 +96,7 @@
       </div>
 
       <div class="panels">
-        <section class="panel" id="panel-profile" role="tabpanel" aria-labelledby="tab-profile" data-panel="profile">
+        <section class="panel" id="profile" aria-labelledby="nav-profile" data-section="profile">
           <div class="panel-heading">
             <p class="kicker" data-i18n="profileKicker">Development first</p>
             <h2 data-i18n="profileTitle">I build software with production in mind.</h2>
@@ -163,7 +163,7 @@
           </ol>
         </section>
 
-        <section class="panel" id="panel-impact" role="tabpanel" aria-labelledby="tab-impact" data-panel="impact" hidden>
+        <section class="panel" id="impact" aria-labelledby="nav-impact" data-section="impact">
           <div class="panel-heading">
             <p class="kicker" data-i18n="impactKicker">Selected impact</p>
             <h2 data-i18n="impactTitle">Complex systems, made easier to build and evolve.</h2>
@@ -216,7 +216,7 @@
           </div>
         </section>
 
-        <section class="panel" id="panel-products" role="tabpanel" aria-labelledby="tab-products" data-panel="products" hidden>
+        <section class="panel" id="products" aria-labelledby="nav-products" data-section="products">
           <div class="panel-heading panel-heading--with-note">
             <div>
               <p class="kicker" data-i18n="productsKicker">GacTec products</p>
@@ -316,7 +316,7 @@
           </div>
         </section>
 
-        <section class="panel" id="panel-contact" role="tabpanel" aria-labelledby="tab-contact" data-panel="contact" hidden>
+        <section class="panel" id="contact" aria-labelledby="nav-contact" data-section="contact">
           <div class="contact-intro">
             <p class="kicker" data-i18n="contactKicker">Contact</p>
             <h2 data-i18n="contactTitle">A useful conversation can start with one clear message.</h2>

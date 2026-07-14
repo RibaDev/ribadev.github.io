@@ -153,10 +153,13 @@ const copy = {
   }
 };
 
-const tabs = [...document.querySelectorAll('[role="tab"]')];
-const panels = [...document.querySelectorAll('[role="tabpanel"]')];
+const sectionLinks = [...document.querySelectorAll("[data-section-link]")];
+const sections = [...document.querySelectorAll("[data-section]")];
 const languageButtons = [...document.querySelectorAll("[data-lang]")];
 const panelsContainer = document.querySelector(".panels");
+const contentNavigation = document.querySelector(".content__nav");
+const desktopLayout = window.matchMedia("(min-width: 1040px)");
+const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
 function setLanguage(language, persist = true) {
   const lang = copy[language] ? language : "en";
@@ -186,42 +189,76 @@ function setLanguage(language, persist = true) {
   });
 
   if (persist) localStorage.setItem("profile-language", lang);
+  requestSectionSync();
 }
 
-function activateTab(name, { updateHash = true, moveFocus = false } = {}) {
-  const nextTab = tabs.find((tab) => tab.dataset.tab === name) || tabs[0];
-  const nextName = nextTab.dataset.tab;
-
-  tabs.forEach((tab) => {
-    const active = tab === nextTab;
-    tab.setAttribute("aria-selected", String(active));
-    tab.tabIndex = active ? 0 : -1;
+function setCurrentSection(name) {
+  sectionLinks.forEach((link) => {
+    if (link.dataset.sectionLink === name) {
+      link.setAttribute("aria-current", "page");
+    } else {
+      link.removeAttribute("aria-current");
+    }
   });
-
-  panels.forEach((panel) => {
-    const active = panel.dataset.panel === nextName;
-    panel.hidden = !active;
-    panel.classList.toggle("is-entering", active);
-    if (active) window.setTimeout(() => panel.classList.remove("is-entering"), 420);
-  });
-
-  if (panelsContainer) panelsContainer.scrollTop = 0;
-  if (updateHash) history.replaceState(null, "", `#${nextName}`);
-  if (moveFocus) nextTab.focus();
 }
 
-tabs.forEach((tab, index) => {
-  tab.addEventListener("click", () => activateTab(tab.dataset.tab));
-  tab.addEventListener("keydown", (event) => {
-    if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
+function scrollToSection(name, { updateHash = true, behavior } = {}) {
+  const section = sections.find((candidate) => candidate.dataset.section === name) || sections[0];
+  if (!section) return;
+
+  section.scrollIntoView({
+    behavior: behavior || (reducedMotion.matches ? "instant" : "smooth"),
+    block: "start"
+  });
+  setCurrentSection(section.dataset.section);
+  if (updateHash) history.replaceState(null, "", `#${section.dataset.section}`);
+}
+
+let sectionSyncFrame = null;
+
+function syncCurrentSection() {
+  sectionSyncFrame = null;
+  if (!sections.length) return;
+
+  const desktop = desktopLayout.matches && panelsContainer;
+  const navigationBottom = contentNavigation?.getBoundingClientRect().bottom || 0;
+  const referenceLine = desktop
+    ? panelsContainer.getBoundingClientRect().top + Math.min(panelsContainer.clientHeight * 0.28, 180)
+    : navigationBottom + Math.min(window.innerHeight * 0.18, 140);
+  const reachedEnd = desktop
+    ? panelsContainer.scrollTop + panelsContainer.clientHeight >= panelsContainer.scrollHeight - 4
+    : window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 4;
+
+  let currentSection = sections[0];
+  sections.forEach((section) => {
+    if (section.getBoundingClientRect().top <= referenceLine) currentSection = section;
+  });
+  if (reachedEnd) currentSection = sections[sections.length - 1];
+
+  setCurrentSection(currentSection.dataset.section);
+}
+
+function requestSectionSync() {
+  if (sectionSyncFrame !== null) return;
+  sectionSyncFrame = window.requestAnimationFrame(syncCurrentSection);
+}
+
+sectionLinks.forEach((link) => {
+  link.addEventListener("click", (event) => {
     event.preventDefault();
-    let nextIndex = index;
-    if (event.key === "ArrowRight") nextIndex = (index + 1) % tabs.length;
-    if (event.key === "ArrowLeft") nextIndex = (index - 1 + tabs.length) % tabs.length;
-    if (event.key === "Home") nextIndex = 0;
-    if (event.key === "End") nextIndex = tabs.length - 1;
-    activateTab(tabs[nextIndex].dataset.tab, { moveFocus: true });
+    scrollToSection(link.dataset.sectionLink);
   });
+});
+
+window.addEventListener("scroll", requestSectionSync, { passive: true });
+panelsContainer?.addEventListener("scroll", requestSectionSync, { passive: true });
+window.addEventListener("resize", requestSectionSync);
+desktopLayout.addEventListener("change", requestSectionSync);
+window.addEventListener("hashchange", () => {
+  const name = window.location.hash.slice(1).replace(/^panel-/, "");
+  if (sections.some((section) => section.dataset.section === name)) {
+    scrollToSection(name, { updateHash: false });
+  }
 });
 
 languageButtons.forEach((button) => {
@@ -239,5 +276,13 @@ const browserLanguage = navigator.languages?.some((language) => language.toLower
 const queryLanguage = new URLSearchParams(window.location.search).get("lang");
 setLanguage(copy[queryLanguage] ? queryLanguage : storedLanguage || browserLanguage, false);
 
-const initialHash = window.location.hash.slice(1);
-activateTab(tabs.some((tab) => tab.dataset.tab === initialHash) ? initialHash : "profile", { updateHash: false });
+const initialHash = window.location.hash.slice(1).replace(/^panel-/, "");
+const initialSection = sections.some((section) => section.dataset.section === initialHash) ? initialHash : "profile";
+setCurrentSection(initialSection);
+window.requestAnimationFrame(() => {
+  if (initialHash && initialSection !== "profile") {
+    scrollToSection(initialSection, { updateHash: false, behavior: "instant" });
+  } else {
+    requestSectionSync();
+  }
+});

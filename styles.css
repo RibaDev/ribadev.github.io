@@ -349,22 +349,20 @@ svg { display: block; }
 
 .tabs::-webkit-scrollbar { display: none; }
 
-.tabs button {
+.tabs a {
   flex: 0 0 auto;
-  border: 0;
   border-radius: 99rem;
   padding: 0.54rem 0.9rem;
   background: transparent;
   color: var(--ink-muted);
-  cursor: pointer;
   font-size: 0.84rem;
   font-weight: 700;
   transition: color var(--duration-fast), background var(--duration-fast), transform var(--duration-fast);
 }
 
-.tabs button:hover { color: var(--ink); background: var(--copper-soft); }
-.tabs button:active { transform: scale(0.96); }
-.tabs button[aria-selected="true"] { background: var(--ink); color: var(--surface); }
+.tabs a:hover { color: var(--ink); background: var(--copper-soft); }
+.tabs a:active { transform: scale(0.96); }
+.tabs a[aria-current="page"] { background: var(--ink); color: var(--surface); }
 
 .language-switch--on-paper {
   display: none;
@@ -379,14 +377,20 @@ svg { display: block; }
 .panels {
   flex: 1 0 auto;
   padding: clamp(2.6rem, 7vw, 5.5rem) var(--gutter) 5rem;
+  scroll-behavior: smooth;
 }
 
 .panel {
   width: min(100%, 68rem);
   margin-inline: auto;
+  scroll-margin-top: 5rem;
 }
 
-.panel.is-entering { animation: panel-in var(--duration) var(--ease-out) both; }
+.panel + .panel {
+  margin-top: clamp(5rem, 8vw, 7rem);
+  padding-top: clamp(3rem, 5vw, 4.5rem);
+  border-top: 1px solid var(--line);
+}
 
 .panel-heading { max-width: 48rem; margin-bottom: clamp(2rem, 5vw, 3.5rem); }
 .panel-heading--with-note { max-width: none; display: grid; gap: 1.25rem; }
@@ -756,11 +760,6 @@ svg { display: block; }
   to { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes panel-in {
-  from { opacity: 0; transform: translateY(0.6rem); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
 @keyframes menu-in {
   from { opacity: 0; transform: translate(-50%, 0.45rem); }
   to { opacity: 1; transform: translate(-50%, 0); }
@@ -796,6 +795,7 @@ svg { display: block; }
   .content__nav { position: static; flex: 0 0 auto; padding-inline: clamp(2rem, 3.5vw, 3.7rem); }
   .language-switch--on-paper { display: inline-flex; }
   .panels { min-height: 0; flex: 1 1 auto; overflow-y: auto; scrollbar-gutter: stable; padding-inline: clamp(2rem, 3.5vw, 3.7rem); }
+  .panel { scroll-margin-top: 1.5rem; }
   .footer { flex: 0 0 auto; padding-inline: clamp(2rem, 3.5vw, 3.7rem); }
   .resume-menu__list { left: 0; transform: none; }
   @keyframes menu-in {
@@ -806,7 +806,7 @@ svg { display: block; }
 
 @media (max-width: 680px) {
   .content__nav { padding-inline: 0.85rem; }
-  .tabs button { padding-inline: 0.78rem; }
+  .tabs a { padding-inline: 0.78rem; }
   .expertise__row,
   .career-list li,
   .operability-statement,
