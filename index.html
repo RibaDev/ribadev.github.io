@@ -21,16 +21,20 @@
 
   <div class="site-shell">
     <header class="portrait" aria-labelledby="profile-name">
-      <img
-        class="portrait__image"
-        src="assets/rafael-ribeiro-profile.webp"
-        alt="Portrait of Rafael Ribeiro da Silva"
-        data-i18n-alt="photoAlt"
-        width="1254"
-        height="1254"
-        decoding="async"
-        fetchpriority="high"
-      >
+      <div class="portrait__photo">
+        <img
+          class="portrait__image"
+          src="assets/rafael-ribeiro-profile.webp"
+          alt="Portrait of Rafael Ribeiro da Silva"
+          data-i18n-alt="photoAlt"
+          width="1254"
+          height="1254"
+          decoding="async"
+          fetchpriority="high"
+        >
+        <div class="portrait__photo-shade" aria-hidden="true"></div>
+        <h1 id="profile-name">Rafael Silva</h1>
+      </div>
       <div class="portrait__wash" aria-hidden="true"></div>
 
       <div class="portrait__top">
@@ -42,7 +46,6 @@
 
       <div class="portrait__content">
         <p class="location" data-i18n="location">Aveiro, Portugal · Remote internationally</p>
-        <h1 id="profile-name">Rafael Silva</h1>
         <p class="role" data-i18n="role">Lead / Staff Software Engineer</p>
         <p class="specialty" data-i18n="specialty">Backend &amp; Platform · Go · Python · Ruby · Node.js</p>
 
