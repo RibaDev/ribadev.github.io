@@ -71,6 +71,9 @@ const copy = {
     contactTitle: "A useful conversation can start with one clear message.",
     contactBody: "For senior software engineering roles, product architecture, or a difficult backend and platform challenge, email is the fastest way to reach me.",
     downloadResume: "Download CV",
+    downloadPreparing: "Preparing your CV download…",
+    downloadReady: "CV download started.",
+    downloadError: "The download could not be started. Please try again.",
     availabilityLabel: "Based in",
     availabilityValue: "Aveiro, Portugal · International remote · Hybrid in Portugal",
     footerLine: "Software, systems, and the judgment to connect them."
@@ -147,6 +150,9 @@ const copy = {
     contactTitle: "Uma conversa útil pode começar com uma mensagem clara.",
     contactBody: "Para funções seniores em engenharia de software, arquitetura de produto ou um desafio difícil de backend e plataforma, o e-mail é a forma mais rápida de falar comigo.",
     downloadResume: "Descarregar currículo",
+    downloadPreparing: "A preparar o download do currículo…",
+    downloadReady: "O download do currículo começou.",
+    downloadError: "Não foi possível iniciar o download. Tente novamente.",
     availabilityLabel: "Baseado em",
     availabilityValue: "Aveiro, Portugal · Remoto internacional · Híbrido em Portugal",
     footerLine: "Software, sistemas e o discernimento para os ligar."
@@ -156,6 +162,7 @@ const copy = {
 const sectionLinks = [...document.querySelectorAll("[data-section-link]")];
 const sections = [...document.querySelectorAll("[data-section]")];
 const languageButtons = [...document.querySelectorAll("[data-lang]")];
+const resumeDownloads = [...document.querySelectorAll("[data-resume-download]")];
 const panelsContainer = document.querySelector(".panels");
 const profileContent = document.querySelector(".content");
 const contentNavigation = document.querySelector(".content__nav");
@@ -203,6 +210,58 @@ function syncHeroSnapScope() {
 function updateHeroSnapScope() {
   heroBoundary = profileContent?.offsetTop || 0;
   syncHeroSnapScope();
+}
+
+let downloadStatusTimer = null;
+
+function showDownloadStatus(message, isError = false) {
+  let status = document.querySelector(".download-status");
+  if (!status) {
+    status = document.createElement("div");
+    status.className = "download-status";
+    status.setAttribute("role", "status");
+    status.setAttribute("aria-live", "polite");
+    document.body.append(status);
+  }
+
+  window.clearTimeout(downloadStatusTimer);
+  status.textContent = message;
+  status.classList.toggle("download-status--error", isError);
+  status.classList.add("is-visible");
+  downloadStatusTimer = window.setTimeout(() => status.classList.remove("is-visible"), 3200);
+}
+
+async function forceResumeDownload(event) {
+  event.preventDefault();
+  const link = event.currentTarget;
+  if (link.getAttribute("aria-busy") === "true") return;
+
+  const dictionary = document.documentElement.lang.startsWith("pt") ? copy.pt : copy.en;
+  link.setAttribute("aria-busy", "true");
+  showDownloadStatus(dictionary.downloadPreparing);
+
+  try {
+    const response = await fetch(link.href, { cache: "no-store", credentials: "same-origin" });
+    if (!response.ok) throw new Error(`CV download failed with status ${response.status}`);
+
+    const file = new Blob([await response.arrayBuffer()], { type: "application/pdf" });
+    const objectUrl = URL.createObjectURL(file);
+    const trigger = document.createElement("a");
+    trigger.href = objectUrl;
+    trigger.download = link.getAttribute("download");
+    trigger.hidden = true;
+    document.body.append(trigger);
+    trigger.click();
+    trigger.remove();
+    window.setTimeout(() => URL.revokeObjectURL(objectUrl), 30000);
+
+    link.closest("details")?.removeAttribute("open");
+    showDownloadStatus(dictionary.downloadReady);
+  } catch {
+    showDownloadStatus(dictionary.downloadError, true);
+  } finally {
+    link.removeAttribute("aria-busy");
+  }
 }
 
 function setCurrentSection(name) {
@@ -281,6 +340,10 @@ window.addEventListener("hashchange", () => {
 
 languageButtons.forEach((button) => {
   button.addEventListener("click", () => setLanguage(button.dataset.lang));
+});
+
+resumeDownloads.forEach((link) => {
+  link.addEventListener("click", forceResumeDownload);
 });
 
 document.addEventListener("click", (event) => {

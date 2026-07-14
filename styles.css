@@ -735,6 +735,36 @@ svg { display: block; }
 .contact-ledger__resume p { display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; font-weight: 750; }
 .contact-ledger__resume a:hover { color: var(--copper); }
 
+[data-resume-download][aria-busy="true"] {
+  opacity: 0.55;
+  cursor: wait;
+  pointer-events: none;
+}
+
+.download-status {
+  position: fixed;
+  z-index: 100;
+  right: max(1rem, env(safe-area-inset-right));
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  width: max-content;
+  max-width: calc(100vw - 2rem);
+  padding: 0.72rem 1rem;
+  border: 1px solid var(--line-dark);
+  border-radius: var(--radius-sm);
+  background: var(--ink);
+  color: var(--surface);
+  box-shadow: 0 12px 34px oklch(0.15 0.025 250 / 0.22);
+  font-size: 0.86rem;
+  font-weight: 700;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(0.75rem);
+  transition: opacity var(--duration-fast), transform var(--duration) var(--ease-out);
+}
+
+.download-status.is-visible { opacity: 1; transform: translateY(0); }
+.download-status--error { background: var(--copper-deep); }
+
 .availability { margin-top: 3rem; display: grid; gap: 0.4rem; }
 .availability span { color: var(--copper); font-size: 0.8rem; font-weight: 800; }
 .availability strong { max-width: 42rem; font-size: clamp(1.25rem, 3vw, 2rem); line-height: 1.15; }
