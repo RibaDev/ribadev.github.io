@@ -1,0 +1,470 @@
+/*
+ * Print stylesheet for the CV PDFs.
+ * Rendered to A4 by build.sh with headless Chrome.
+ *
+ * The palette mirrors the site tokens in ../styles.css so both stay in sync.
+ * The font stack resolves to Arial / Liberation Sans, which is what the
+ * published PDFs already embed — keep it that way or the line breaks move.
+ */
+
+:root {
+  --copper: oklch(0.50 0.105 38);
+  --ink: oklch(0.20 0.025 250);
+  --ink-muted: oklch(0.43 0.025 250);
+  --ink-soft: oklch(0.55 0.022 250);
+  --surface: oklch(0.987 0.006 70);
+  --line: oklch(0.84 0.018 55);
+  --sans: Arial, "Liberation Sans", Helvetica, sans-serif;
+  --pad: 3.6rem;
+}
+
+@page { size: A4; margin: 0; }
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body { margin: 0; padding: 0; }
+
+body {
+  font-family: var(--sans);
+  color: var(--ink);
+  background: #e6e0da;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+p, h1, h2, h3, h4, ul, li { margin: 0; padding: 0; }
+li { list-style: none; }
+b, strong { font-weight: 700; }
+
+.page {
+  position: relative;
+  width: 210mm;
+  height: 297mm;
+  margin: 0 auto;
+  padding: 0 var(--pad);
+  background: var(--surface);
+  overflow: hidden;
+}
+
+.page::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 3mm;
+  background: var(--copper);
+}
+
+.page + .page { break-before: page; }
+
+@media screen {
+  .page { margin: 24px auto; box-shadow: 0 12px 34px rgba(30, 18, 12, 0.22); }
+}
+
+/* ---------------------------------------------------------------- header */
+
+.cv-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  column-gap: 16px;
+  align-items: end;
+  padding: 43px 0 18px;
+  border-bottom: 1px solid var(--ink);
+}
+
+.cv-head__name {
+  font-size: 34px;
+  line-height: 1.05;
+  font-weight: 700;
+  letter-spacing: -0.037em;
+  white-space: nowrap;
+}
+
+.cv-head__role {
+  margin-top: 8px;
+  font-size: 15.5px;
+  line-height: 1.25;
+  font-weight: 700;
+  color: var(--copper);
+}
+
+.cv-head__stack {
+  margin-top: 4px;
+  font-size: 11.4px;
+  line-height: 1.35;
+  font-weight: 700;
+}
+
+.cv-head__contact {
+  text-align: right;
+  font-size: 11.4px;
+  line-height: 1.7;
+  white-space: nowrap;
+}
+
+.cv-head__contact span { color: var(--ink-muted); }
+.cv-head__contact strong { display: block; }
+
+.cv-head__photo {
+  width: 88px;
+  height: 88px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+/* --------------------------------------------------------------- profile */
+
+.profile {
+  display: grid;
+  grid-template-columns: 145px 1fr;
+  padding: 19px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.profile__label {
+  margin-top: 5px;
+  font-size: 9.3px;
+  font-weight: 700;
+  letter-spacing: 0.165em;
+}
+
+.profile__body {
+  max-width: 490px;
+  font-size: 13.5px;
+  line-height: 1.42;
+}
+
+.profile__body b { font-weight: 700; }
+
+/* --------------------------------------------------------- section heads */
+
+.section-head {
+  display: grid;
+  grid-template-columns: 22px 1fr;
+  align-items: baseline;
+  padding: 12px 0 9px;
+}
+
+.section-head__n {
+  font-size: 7.5px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--copper);
+}
+
+.section-head__t {
+  font-size: 16px;
+  line-height: 1.3;
+  font-weight: 700;
+}
+
+.section-head--ruled { border-bottom: 1px solid var(--line); }
+.section-head--top { border-top: 1px solid var(--line); }
+
+/* ---------------------------------------------------------------- impact */
+
+.impact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-bottom: 1px solid var(--line);
+}
+
+.impact { padding: 12px 14px 14px 0; }
+
+.impact:nth-child(even) {
+  padding: 12px 0 14px 16px;
+  border-left: 1px solid var(--line);
+}
+
+.impact:nth-child(n + 3) { border-top: 1px solid var(--line); }
+
+.impact__eyebrow {
+  font-size: 9.3px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--copper);
+  text-transform: uppercase;
+}
+
+.impact__title {
+  margin-top: 4px;
+  font-size: 12.6px;
+  line-height: 1.25;
+  font-weight: 700;
+}
+
+.impact__body {
+  margin-top: 5px;
+  font-size: 10.25px;
+  line-height: 1.37;
+  color: var(--ink-muted);
+}
+
+.impact__result {
+  margin-top: 7px;
+  font-size: 10.25px;
+  line-height: 1.37;
+  color: var(--ink-muted);
+}
+
+.impact__result b { color: var(--ink); }
+
+.impact__metrics {
+  margin-top: 7px;
+  font-size: 9.3px;
+  line-height: 1.2;
+  color: var(--ink-muted);
+}
+
+.impact__metrics b {
+  font-size: 14.7px;
+  color: var(--copper);
+  margin-right: 3px;
+}
+
+.impact__metrics span { margin-right: 17px; }
+
+.impact__stack {
+  margin-top: 7px;
+  font-size: 9.3px;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--copper);
+}
+
+/* ------------------------------------------------------------- expertise */
+
+.expertise {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  column-gap: 19px;
+}
+
+.expertise__cell {
+  border-top: 1px solid var(--line);
+  padding: 6px 0 9px;
+}
+
+.expertise__cell--wide {
+  grid-column: 1 / -1;
+  padding: 6px 0 8px;
+}
+
+.expertise__label {
+  font-size: 9.8px;
+  line-height: 1.3;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: var(--copper);
+}
+
+.expertise__value {
+  font-size: 11.4px;
+  line-height: 1.44;
+}
+
+/* ------------------------------------------------------------ experience */
+
+.exp {
+  border-top: 1px solid var(--line);
+  padding: 10px 0 10px;
+}
+
+.exp-list { border-bottom: 1px solid var(--line); }
+
+.exp__head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  column-gap: 16px;
+}
+
+.exp__role {
+  font-size: 12.6px;
+  line-height: 1.3;
+  font-weight: 700;
+}
+
+.exp__role em {
+  font-style: normal;
+  color: var(--copper);
+}
+
+.exp__dates {
+  font-size: 10.25px;
+  font-weight: 700;
+  color: var(--copper);
+  white-space: nowrap;
+}
+
+.exp__body {
+  margin-top: 5px;
+  font-size: 11.4px;
+  line-height: 1.38;
+  color: var(--ink-muted);
+}
+
+.exp__points {
+  margin-top: 5px;
+  font-size: 11.4px;
+  line-height: 1.38;
+  color: var(--ink-muted);
+}
+
+.exp__points li {
+  position: relative;
+  padding-left: 22px;
+}
+
+.exp__points li::before {
+  content: "";
+  position: absolute;
+  left: 8px;
+  top: 6px;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--ink-muted);
+}
+
+/* ------------------------------------------------------------ small jobs */
+
+.stints {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 25px;
+  row-gap: 9px;
+  padding: 11px 0 0;
+  font-size: 11.4px;
+  line-height: 1.4;
+  color: var(--ink-muted);
+}
+
+.stints b { color: var(--ink); }
+
+/* -------------------------------------------------------------- products */
+
+.products { border-bottom: 1px solid var(--line); }
+
+.product {
+  display: grid;
+  grid-template-columns: 40px 112px minmax(0, 1fr) 185px;
+  column-gap: 0;
+  align-items: start;
+  border-top: 1px solid var(--line);
+  padding: 11px 0 13px;
+}
+
+.product__n {
+  font-size: 9.3px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--copper);
+  padding-top: 3px;
+}
+
+.product__name {
+  font-size: 12.6px;
+  line-height: 1.35;
+  font-weight: 700;
+}
+
+.product__desc {
+  font-size: 11.4px;
+  line-height: 1.4;
+  color: var(--ink-muted);
+  padding-right: 20px;
+}
+
+.product__stack {
+  font-size: 9.8px;
+  line-height: 1.45;
+  font-weight: 700;
+  color: var(--copper);
+  padding-top: 2px;
+}
+
+/* --------------------------------------------------- languages/education */
+
+.closing {
+  display: grid;
+  grid-template-columns: 230px 1fr;
+  column-gap: 39px;
+  margin-top: 26px;
+}
+
+.closing__group { border-top: 1px solid var(--line); padding-top: 9px; }
+
+.closing__label {
+  font-size: 9.8px;
+  font-weight: 700;
+  letter-spacing: 0.11em;
+  color: var(--ink-soft);
+}
+
+.closing__items {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 19px;
+  margin-top: 11px;
+}
+
+.closing__term {
+  font-size: 11.4px;
+  line-height: 1.35;
+  font-weight: 700;
+}
+
+.closing__detail {
+  font-size: 11.4px;
+  line-height: 1.4;
+  color: var(--ink-muted);
+}
+
+/* ---------------------------------------------------------- running head */
+
+.run-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 43px 0 12px;
+  border-bottom: 1px solid var(--line);
+}
+
+.run-head__title {
+  font-size: 16px;
+  line-height: 1.3;
+  font-weight: 700;
+}
+
+.run-head__who {
+  font-size: 10.25px;
+  font-weight: 700;
+  color: var(--copper);
+}
+
+/* ---------------------------------------------------------------- footer */
+
+.page-foot {
+  position: absolute;
+  left: var(--pad);
+  right: var(--pad);
+  bottom: 25px;
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  padding-top: 9px;
+  border-top: 1px solid var(--line);
+  font-size: 9.3px;
+  line-height: 1.3;
+  color: var(--ink-soft);
+}
+
+/* ----------------------------------------------------------------- dense */
+/* The Portuguese copy runs longer than the English. These few pixels of
+   vertical rhythm are what keep page one ending on the Millennium bcp
+   entry in both languages. Applied via class="dense" on cv-pt.html. */
+
+.dense .profile { padding: 15px 0; }
+.dense .impact { padding-bottom: 11px; }
+.dense .section-head { padding: 10px 0 8px; }
