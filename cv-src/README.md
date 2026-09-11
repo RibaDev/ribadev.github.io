@@ -37,7 +37,7 @@ same way they print.
   into it.
 - **Fixed pages.** Each `.page` is a hard 210×297mm box, so content does not
   reflow across pages. If you add a paragraph, check that page one still ends
-  on the Millennium bcp entry and that nothing runs under the footer rule.
+  on the Algemetric entry and that nothing runs under the footer rule.
 - **`class="dense"`** on `cv-pt.html` shaves a few pixels off some vertical
   padding. Portuguese runs longer than English and needs it to fit the same
   two pages.
